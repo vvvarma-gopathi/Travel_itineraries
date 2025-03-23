@@ -1,0 +1,81 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'itineraries.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h2>Welcome to Travel Itineraries</h2>
+        <a href="/" style="height:2rem; position:absolute;right:10px; background-color: aquamarine; color:black; text-decoration: none; border:2px solid black;">Home</a>
+    </header>
+    <body>
+        <div class="positionaldiv">
+            <div class="menu">
+                {% for trip in context %}
+                    <button onclick="fetchdetails('{{trip.destination}}')" class="trip-button">{{trip.destination}}</button>
+                {% endfor %}
+            </div>
+            <div class="hide" id="trip_details">
+            </div>
+        </div>
+    </body>
+    <script>
+        function show(data){
+            let element = documentation.querySelector('#trip_details');
+            console.log(data.destination);
+            element.querySelector("#destination").textContent=`${data.destination}`;
+        }
+        function fetchdetails(trip){
+            let element = document.querySelector("#trip_details");
+            let children=element.children;
+            element.classList.remove('hide');
+            element.classList.add('trip_details');
+            console.log(trip)
+            formdata = {destination:trip,};
+            fetch("/fetchdetails", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "X-CSRFToken": getCSRFToken()
+            },
+            body: JSON.stringify(formdata)
+            })
+            .then(response => response.json())
+            .then(responseData => {
+      console.log("Raw Response:", responseData);
+      let data = JSON.parse(responseData.data);
+      console.log("Parsed Data:", data);
+      let display =  document.getElementById("trip_details").innerHTML = `
+        <div class="types" id="destination"><h4>Destination:</h4><p>${data.destination}</p></div>
+        <div class="types" id="days"><h4>Estimated days to complete trip:</h4><p>${data.days}</p></div>
+                <div class="types" id="distance"><h4>Distance:</h4><p>${data.distance}</p></div>
+                <div class="types" id="date"><h4>Starting date:</h4><p>${data.date}</p></div>
+                <div class="types" id="transportation"><h4>Travelling By:</h4><p>${data.transportation}</p></div>
+                <div class="types" id="hotels"><h4>Hotels:</h4><p>${data.hotels}</p></div>
+                <div class="types" id="activities"><h4>Activities:</h4><p>${data.activities}</p></div>
+                <div class="types" id="trip_cost"><h4>Trip Cost:</h4><p>${data.trip_cost}</p></div>
+                <div class="types" id="remarks"><h4>Remarks:</h4><p>${data.remarks}</p></div>
+                <div class="types" id="visiting_places"><h4>Visiting Places:</h4><p>${data.visiting_places}</p></div>
+      `;
+  })
+            .catch(error => console.error("Error:", error));
+        }
+    function getCSRFToken() {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== "") {
+        document.cookie.split(";").forEach(cookie => {
+            let [name, value] = cookie.trim().split("=");
+            if (name === "csrftoken") {
+                cookieValue = value;
+            }
+        });
+    }
+    return cookieValue;
+    }
+    </script>
+</body>
+</html>

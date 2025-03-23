@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{% static 'home.css' %}">
+    <title>Document</title>
+</head>
+<body>
+    <header>
+        <h2>Welcome to Travel Itineraries</h2>
+    </header>
+    <body class="mainbody">
+        <div class="menubar">
+            <h3>Welcome to Travel Itineraries</h3>
+            <a href="myitineraries">My Travel Itineraries</a>
+        </div>
+        <marquee scrollamount='15' id="marque">This travel itinerary webpage is a platform designed to help users plan and organize their trips efficiently. It allows travelers to input details like destinations, dates, accommodations, activities, and transportation in a structured format.</marquee>
+        <div class="search-container">
+            <label for="" style="color:red;">Enter the travel place:</label>
+            <input type="text" id="search" class="search-input" placeholder="Enter a place...." onkeyup="showSuggestions()" name="trip">
+            <div id="suggestions" class="suggestions"></div>
+            <label for="" style="color:red">Enter total days to complete trip</label>
+            <input type="number" placeholder="Enter total days for the whole trip" name="days" class="Days"> <br>
+            <button class="create" onclick="create()">Create itineraries</button>
+            <p id="warnings" class="warnings"></p>
+        </div>
+        <div class="hide">
+            <div class="itineraries_form">
+                <h4 id="trip">Destination:</h4><p id="resd"></p>
+                <h4 id="day">Days:</h4> <p id="resday"></p>
+                <form action="" method="post" id="save_form">
+                    <label for="distance" class="formele" >Enter the distance in km</label> <br>
+                    <input type="number" placeholder="Enter the distance.." name="distance" class="formele" required> <br>
+                    <label for="date">Date of trip start</label> <br>
+                    <input type="date" required name="date"> <br>
+                    <label for="transportation" class="formele">Transportation</label> <br>
+                    <select name="transportation" id="transportation" class="formele" required> 
+                        <option value="train">Train</option>
+                        <option value="bus">Buss</option>
+                        <option value="cab">Cab</option>
+                        <option value="car">Car</option>
+                        <option value="bike">Bike</option>
+                        <option value="flight">Flight</option>
+                    </select> <br>
+                    <label for="hotels" class="formele">Hotels(optional)</label> <br>
+                    <input type="text" placeholder="Hotel name" name="hotels" class="formele"> <br>
+                    <label for="activities" class="formele">Activities to do</label> <br>
+                    <input type="text" placeholder="Activities" class="formele" required name="activities"> <br>
+                    <label for="remarks">Remarks (optional)</label> <br>
+                    <textarea name="remarks" id="remarks" class="formele" placeholder="Enter remarks if any"></textarea> <br>
+                    <label for="Tripcost">Trip cost in Indian rupees</label> <br>
+                    <input type="number" placeholder="Enter the cost of trip..." required name="trip_cost"> <br>
+                    <label for="Visiting places">Visiting Places between trip</label> <br>
+                    <input type="text" placeholder="Visiting places.." name="visiting_places">
+                </form>
+                <button onclick="save()">Save</button>
+            </div>
+        </div>
+    </body>
+    <footer style="color:red;">
+        Fill the above details and click "Create Itineraries" button to start creating the detailed travel itineraries
+    </footer>
+    <!--Script for the search results is starts from here-->
+    <script>
+        const suggestionList = ["Maldives", "Paris", "France", "India", "London", "England", "Iceland", "New York", "USA", "Rome","Italy","Masai Mara","Kenya","Santorini","Greece","Australia","BarcelonaBarcelona","Spain","Brazil"];
+
+        function showSuggestions() {
+            let input = document.getElementById("search").value.toLowerCase();
+            let suggestionsDiv = document.getElementById("suggestions");
+            suggestionsDiv.innerHTML = "";
+
+            if (input === "") {
+                suggestionsDiv.style.display = "none";
+                return;
+            }
+
+            let filteredSuggestions = suggestionList.filter(item => item.toLowerCase().includes(input));
+
+            if (filteredSuggestions.length > 0) {
+                suggestionsDiv.style.display = "block";
+                filteredSuggestions.forEach(item => {
+                    let div = document.createElement("div");
+                    div.textContent = item;
+                    div.onclick = function() {
+                        document.getElementById("search").value = item;
+                        suggestionsDiv.style.display = "none";
+                    };
+                    suggestionsDiv.appendChild(div);
+                });
+            } else {
+                suggestionsDiv.style.display = "none";
+            }
+        }
+        document.addEventListener("click", function(event) {
+            if (!event.target.closest(".search-container")) {
+                document.getElementById("suggestions").style.display = "none";
+            }
+        });
+    </script>
+    <script src="{% static 'home_script.js' %}"></script>
+</body>
+</html>
